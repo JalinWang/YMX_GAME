@@ -1,108 +1,90 @@
 ﻿#include <queue>
 #include <string>
 #include <vector>
+#include <thread>
+#include <chrono>
+#include "define_classes.h"
+
 using namespace std;
 
-class BaseObject{
-public:
-virtual void update();
-virtual void onCollision(BaseObject Obj);
-};
+#define ROUND_0 0
+int now;	//当前时间
 
-enum ObjType {
-	ENUM_MAP, ENUM_MONSTOR, ENUM_PLAYER, ENUM_WALL, ENUM_BULLET
-};
+//60帧/s -> 17ms/帧
+#define PERIOD 17
 
+//TODO: 改成单例模式
 class ResModule{
 public:
-	void Load(ObjType type, int type_id)//load attr. Bitmap
-	{}
-};
+	vector<Event> LoadMap(ObjType type, int typeId);//加载地图事件
+	void Load(BaseObject &obj, ObjType type, int typeId);//加载属性、贴图等
+	void Init();//初始化，检查文件存在与否
+}mRes;
 
-class Event{
+class RenderModule{
 public:
-	int time;
-	string type;
-	int type_id;
-	int pos
-};
+	void ShowIamge(BaseObject *obj);
+}mRender;
 
 class SceneModule{
 public:
-	BaseObject *p_obj_list;
-	priority_queue<Event> heap; 
+	vector<BaseObject *> objList;
+	priority_queue<Event> heap;
+	SceneModule();
 	void Init()
 	{
-		vector<Event> m = ResModule.load(map, round_0);
-		for(
-			heap.push(w);
+		vector<Event> eventsList = mRes.LoadMap(ENUM_MAP, ROUND_0);
+		for(auto i : eventsList)
+			heap.push(i);
 	}
-	Run()
+	void Run()
 	{
-	Await time_ signal
-	While(heap.top().time == now)
-		p_obj_list.push(new xxxx);
-		heap.pop();
-	Render.show_img(wall, background)
-	For p_obj in p_obj_list:
-		P_obj->update();
-	Render.show_img(P_obj)
-	CollisionDetect()
+		while(true)
+		{
+			//延时
+			std::this_thread::sleep_for(std::chrono::milliseconds(PERIOD));
+			while(heap.top().occurTime == now)
+			{
+				Event &t = heap.top();
+				objList.push_back(t.Occur());
+				heap.pop();
+			}
+
+			CollisionDetect();
+
+			//显示地图背景
+			//mRender.show_img(wall, background)
+			
+			//遍历更新物体并显示
+			for(auto obj : objList)
+			{
+				obj->Update();
+				mRender.ShowIamge(obj);
+			}
+		}
 	}
-	CollisionDetect()
+	void CollisionDetect()
 	{
-	For i in p_obj_list:
-		For j in p_obj_list:
-			If(Xxxxxxxx(i, j))
-				i-> onCollision(); == (*i).
-				j-> onCollision();
+		for(auto i : objList)
+			for(auto j : objList)
+				if(Detect(i, j))
+				{
+					i->OnCollision(j);
+					j->OnCollision(i);
+				}
 	}
-	void Delete(int id);
-}
+	bool Detect(BaseObject *i, BaseObject *j);//  判断
+}mScene;
+
+void Welcome();// 界面、欢迎信息等
 
 int main()
 {
-	Welcome()
-	ResModule.init();
-	SceneModule.Init_map()
-	Timer timer;
-	Signal time_signal;
-	While(Timer)
-		New thread(SceneModule().run());
+	Welcome();
+	mRes.Init();
+	mScene.Init();
+	//开个新线程后台运行
+	thread backgoundThread(mScene.Run, &mScene);
+	backgoundThread.detach();
 	
 }
-
-SceneModule{
-BaseObj *p_obj_list;
-Heap<Event{time, type, type_id, pos}>; 
-Init()
-{
-List<Event> m = ResModule.load(map, round_0);
-For w in m:
-	Heap.push(w);
-}
-Run()
-{
-Await time_ signal
-While(heap.top().time == now)
-	p_obj_list.push(new xxxx);
-	heap.pop();
-Render.show_img(wall, background)
-For p_obj in p_obj_list:
-	P_obj->update();
-Render.show_img(P_obj)
-CollisionDetect()
-}
-CollisionDetect()
-{
-For i in p_obj_list:
-	For j in p_obj_list:
-		If(Xxxxxxxx(i, j))
-			i-> onCollision(); == (*i).
-			j-> onCollision();
-}
-Delete(id)
-}
-Render{
-	Show_img(pos, bitmap, layer)
-} 
