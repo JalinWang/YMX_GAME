@@ -90,7 +90,7 @@ public:
 	{
 		return occurTime < t.occurTime;
 	}
-	BaseObject *Occur()
+	BaseObject *Occur() const
 	{
 		BaseObject *ret;
 		switch (type)
