@@ -46,18 +46,18 @@ class SceneModule {
 public:
 	vector<BaseObject*> objList;
 	priority_queue<Event> heap;
-	SceneModule();
+	SceneModule(ResModule*, RenderModule*);
 	void Init();
 	void Run();
 	void CollisionDetect();
-	bool Detect(BaseObject * i, BaseObject * j);//  еп╤о
+	bool Detect(BaseObject* i, BaseObject* j);//  еп╤о
 private:
-	ResModule *mRes;
-	RenderModule *mRender;
+	ResModule* mRes;
+	RenderModule* mRender;
 
-	//Singleton
-public:
-	SceneModule* getInstance();
-private:
-	SceneModule* instance;
+	//	//Singleton
+	//public:
+	//	SceneModule* getInstance();
+	//private:
+	//	SceneModule* instance;
 };

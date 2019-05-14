@@ -4,7 +4,7 @@
 	Setting setting;
 }*/
 
-int now;
+int now;	//当前时间
 /*
 class Setting
 {

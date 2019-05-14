@@ -6,12 +6,10 @@
 #include <functional>
 #include <iostream>
 #include "define_classes.h"
+#include "Modules.h"
+#include "Setting.h"
 
 using namespace std;
-
-int now;	//当前时间
-
-constexpr int ROUND_0 = 0;
 
 void Welcome()// 界面、欢迎信息等
 {
@@ -21,10 +19,12 @@ void Welcome()// 界面、欢迎信息等
 int main()
 {
 	Welcome();
+	ResModule mRes;
+	RenderModule mRender;
+	SceneModule mScene(&mRes, &mRender);
 	mRes.Init();
 	mScene.Init();
 	//开个新线程后台运行
 	thread backgoundThread(bind(mScene.Run, &mScene));
 	backgoundThread.detach();
-	
 }

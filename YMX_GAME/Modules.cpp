@@ -49,10 +49,9 @@ RenderModule* RenderModule::getInstance()
 	return instance;
 }
 
-SceneModule::SceneModule()
+SceneModule::SceneModule(ResModule* res, RenderModule* render):
+	mRes(res), mRender(render)
 {
-	mRes = mRes->getInstance();
-	mRender = mRender->getInstance();
 }
 
 inline void SceneModule::Init()
@@ -102,12 +101,12 @@ bool SceneModule::Detect(BaseObject* i, BaseObject* j)
 {
 	return false;
 }
-
+/*
 SceneModule* SceneModule::getInstance()
 {
 	if (instance == nullptr)
 		instance = new SceneModule();
 	return instance;
-}
+}*/
 
 
