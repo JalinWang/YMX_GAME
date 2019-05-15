@@ -11,6 +11,7 @@
 #include <fstream>
 #include "define_classes.h"
 #include "Modules.h"
+#include <io.h>
 
 using namespace std;
 
@@ -18,81 +19,82 @@ using namespace std;
 //using nm_GameEngine::RenderModule;
 //using nm_GameEngine::SceneModule;
 
-class Pos{
-public:
-	int x, y;
-	friend inline istream & operator << (istream & f, Pos &p){
-	    f << p.x << " " << p.y;
-	    return p;
+vector<string> listFiles(string dir)
+{
+	vector<string> ret;
+	intptr_t handle;
+	_finddata_t findData;
+
+	handle = _findfirst(dir.c_str, &findData);    // 查找目录中的第一个文件
+	if (handle == -1)
+	{
+		cout << "Failed to find first file!\n";
+		return;
 	}
 
-	friend inline ostream & operator >> (ostream & f, Pos &p){
-	    f >> p.x >> p.y;
-	    return f;
-	}
-};
-
-//map Event
-class Event{
-public:
-	int occurTime; //出现时间
-	int typeId;
-	ObjType type;
-	Pos pos;
-	Event(){}
-	Event(Pos p, int t):pos(p), occurTime(t){}
-	bool operator < (const Event &t)
+	do
 	{
-		return occurTime < t.occurTime;
-	}
-	fstream& operator >> (fstream& f) {
-		f >> occurTime >> pos.x >> pos.y >> typeId;
-		type = ENUM_MONSTOR;
-		return f;
-	}
-	BaseObject *Occur() const
-	{
-		BaseObject *ret;
-		switch (type)
+		if (findData.attrib & _A_SUBDIR
+			&& strcmp(findData.name, ".") == 0
+			&& strcmp(findData.name, "..") == 0
+			)    // 是否是子目录并且不为"."或".."
+			cout << findData.name << "\t<dir>\n";
+		else
 		{
-		case ENUM_MAP:
-			break;
-		case ENUM_MONSTOR:
-			break;
-		case ENUM_PLAYER:
-			ret = new Player();
-			break;
-		case ENUM_WALL:
-			break;
-		case ENUM_BULLET:
-			break;
-		default:
-			break;
+			cout << findData.name << "\t" << findData.size << endl;
+			ret.push_back(string(findData.name));
 		}
-		return ret;
-	}
-};
+	} while (_findnext(handle, &findData) == 0);    // 查找目录中的下一个文件
+
+	cout << "Done!\n";
+	_findclose(handle);    // 关闭搜索句柄
+}
 
 
 vector<Event> ResModule::LoadMap(ObjType type, int typeId)
 {
 	// 256 * 256
-	fstream file("Res\\Map\\Round0\\Walls.txt", ios::in);
+	fstream file;
 	Pos pos;
-	Event eve;
+	Event event;
 	vector<Event> ret;
+
+	file.open("Res\\Map\\Round0\\Walls.txt", ios::in);
 	while(file >> pos)
 		ret.push_back(Event(pos, 0));
 	file.close();
+
 	file.open("Res\\Map\\Round0\\Monsters.txt", ios::in);
-
-	while(file >> eve)
-
-	return vector<Event>();
+	while(file >> event)
+		ret.push_back(event);
+	return ret;
 }
 
-void ResModule::Load(BaseObject& obj, ObjType type, int typeId)
+void ResModule::Load(BaseObject *obj, ObjType type, int typeId)
 {
+	ifstream f;
+	string dir("Res\\");
+	vector<string> ret;
+	switch (type)
+	{
+	case ENUM_MONSTOR:
+		ret = listFiles(dir += "Monster\\");
+		for(auto fileName: ret)
+		{
+			f.open(dir + fileName);
+			f >> 
+		}
+		break;
+	case ENUM_PLAYER:
+		break;
+	case ENUM_BULLET:
+		break;
+
+	case ENUM_WALL:
+	case ENUM_MAP:
+	default:
+		break;
+	}
 }
 
 void ResModule::Init()
@@ -147,11 +149,14 @@ void SceneModule::Run()
 		//mRender.show_img(wall, background)
 
 		//遍历更新物体并显示
-		for (auto obj : objList)
+		for (auto iter = objList.begin(); iter != objList.end();)
 		{
-			obj->Update();
-			mRender->ShowIamge(obj);
+			auto cur = iter;
+			++iter;
+			(*cur)->Update(now, Setting::period);
 		}
+		for(auto cur:objList)
+			mRender->ShowIamge(cur);
 	}
 }
 void SceneModule::CollisionDetect()
@@ -169,6 +174,7 @@ bool SceneModule::Detect(BaseObject* i, BaseObject* j)
 {
 	return false;
 }
+
 /*
 SceneModule* SceneModule::getInstance()
 {
