@@ -8,6 +8,7 @@
 #include <chrono>
 #include <functional>
 #include <iostream>
+#include <fstream>
 #include "define_classes.h"
 #include "Modules.h"
 
@@ -17,9 +18,66 @@ using namespace std;
 //using nm_GameEngine::RenderModule;
 //using nm_GameEngine::SceneModule;
 
+class Pos{
+	int x, y;
+	friend inline fstream & operator << (fstream & f, Pos &p){
+	    f << p.x << " " << p.y;
+	    return d;
+	}
+
+	friend inline fstream & operator >> (fstream & f, Pos &p){
+	    f >> p.x >> p.y;
+	    return f;
+	}
+};
+
+//map Event
+class Event{
+public:
+	int occurTime; //出现时间
+	int typeId;
+	ObjType type;
+	Pos pos;
+	Event(){}
+	Event(Pos p, int t):pos(p), occurTime(t){}
+	bool operator < (const Event &t)
+	{
+		return occurTime < t.occurTime;
+	}
+	BaseObject *Occur() const
+	{
+		BaseObject *ret;
+		switch (type)
+		{
+		case ENUM_MAP:
+			break;
+		case ENUM_MONSTOR:
+			break;
+		case ENUM_PLAYER:
+			ret = new Player();
+			break;
+		case ENUM_WALL:
+			break;
+		case ENUM_BULLET:
+			break;
+		default:
+			break;
+		}
+		return ret;
+	}
+};
+
 
 vector<Event> ResModule::LoadMap(ObjType type, int typeId)
 {
+	// 256 * 256
+	fstream file("Res\\Map\\Round0\\Walls.txt", ios::in);
+	Pos pos;
+	vector<Event> ret;
+	while(file >> pos)
+		ret.push_back(Event(pos, 0));
+	file.close();
+	file.open("Res\\Map\\Round0\\Monsters.txt", ios::in);
 	return vector<Event>();
 }
 
@@ -104,9 +162,9 @@ bool SceneModule::Detect(BaseObject* i, BaseObject* j)
 /*
 SceneModule* SceneModule::getInstance()
 {
-	if (instance == nullptr)
-		instance = new SceneModule();
-	return instance;
+if (instance == nullptr)
+instance = new SceneModule();
+return instance;
 }*/
 
 

@@ -79,36 +79,3 @@ protected:
 };
 
 
-//map Event
-class Event{
-public:
-	int occurTime; //出现时间
-	int typeId;
-	ObjType type;
-	int posX, posY;
-	bool operator < (const Event &t)
-	{
-		return occurTime < t.occurTime;
-	}
-	BaseObject *Occur() const
-	{
-		BaseObject *ret;
-		switch (type)
-		{
-		case ENUM_MAP:
-			break;
-		case ENUM_MONSTOR:
-			break;
-		case ENUM_PLAYER:
-			ret = new Player();
-			break;
-		case ENUM_WALL:
-			break;
-		case ENUM_BULLET:
-			break;
-		default:
-			break;
-		}
-		return ret;
-	}
-};
