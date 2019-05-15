@@ -19,13 +19,14 @@ using namespace std;
 //using nm_GameEngine::SceneModule;
 
 class Pos{
+public:
 	int x, y;
-	friend inline fstream & operator << (fstream & f, Pos &p){
+	friend inline istream & operator << (istream & f, Pos &p){
 	    f << p.x << " " << p.y;
-	    return d;
+	    return p;
 	}
 
-	friend inline fstream & operator >> (fstream & f, Pos &p){
+	friend inline ostream & operator >> (ostream & f, Pos &p){
 	    f >> p.x >> p.y;
 	    return f;
 	}
@@ -43,6 +44,11 @@ public:
 	bool operator < (const Event &t)
 	{
 		return occurTime < t.occurTime;
+	}
+	fstream& operator >> (fstream& f) {
+		f >> occurTime >> pos.x >> pos.y >> typeId;
+		type = ENUM_MONSTOR;
+		return f;
 	}
 	BaseObject *Occur() const
 	{
@@ -73,11 +79,15 @@ vector<Event> ResModule::LoadMap(ObjType type, int typeId)
 	// 256 * 256
 	fstream file("Res\\Map\\Round0\\Walls.txt", ios::in);
 	Pos pos;
+	Event eve;
 	vector<Event> ret;
 	while(file >> pos)
 		ret.push_back(Event(pos, 0));
 	file.close();
 	file.open("Res\\Map\\Round0\\Monsters.txt", ios::in);
+
+	while(file >> eve)
+
 	return vector<Event>();
 }
 
