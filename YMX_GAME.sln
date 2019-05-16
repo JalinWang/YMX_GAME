@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "YMX_GAME", "YMX_GAME\YMX_GAME.vcxproj", "{FA70AED9-77EE-47A1-BEFA-A2BA5FF7DE15}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AttrGenerator", "AttrGenerator\AttrGenerator.vcxproj", "{C4A118C6-FA22-4667-BA6A-1624E7DD8F76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +15,10 @@ Global
 		{FA70AED9-77EE-47A1-BEFA-A2BA5FF7DE15}.Debug|Win32.Build.0 = Debug|Win32
 		{FA70AED9-77EE-47A1-BEFA-A2BA5FF7DE15}.Release|Win32.ActiveCfg = Release|Win32
 		{FA70AED9-77EE-47A1-BEFA-A2BA5FF7DE15}.Release|Win32.Build.0 = Release|Win32
+		{C4A118C6-FA22-4667-BA6A-1624E7DD8F76}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C4A118C6-FA22-4667-BA6A-1624E7DD8F76}.Debug|Win32.Build.0 = Debug|Win32
+		{C4A118C6-FA22-4667-BA6A-1624E7DD8F76}.Release|Win32.ActiveCfg = Release|Win32
+		{C4A118C6-FA22-4667-BA6A-1624E7DD8F76}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

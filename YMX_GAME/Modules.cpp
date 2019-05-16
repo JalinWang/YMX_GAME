@@ -12,8 +12,11 @@
 #include "define_classes.h"
 #include "Modules.h"
 #include <io.h>
+#include "..\Libs\inifile.h"
 
 using namespace std;
+
+using namespace inifile;
 
 //using nm_GameEngine::ResModule;
 //using nm_GameEngine::RenderModule;
@@ -50,12 +53,11 @@ vector<string> listFiles(string dir)
 	_findclose(handle);    // ¹Ø±ÕËÑË÷¾ä±ú
 }
 
-
 vector<Event> ResModule::LoadMap(ObjType type, int typeId)
 {
 	// 256 * 256
 	fstream file;
-	Pos pos;
+	Position pos;
 	Event event;
 	vector<Event> ret;
 
@@ -70,8 +72,9 @@ vector<Event> ResModule::LoadMap(ObjType type, int typeId)
 	return ret;
 }
 
-void ResModule::Load(BaseObject *obj, ObjType type, int typeId)
+BaseObject *ResModule::Load(ObjType type, int typeId)
 {
+	BaseObject *obj;
 	ifstream f;
 	string dir("Res\\");
 	vector<string> ret;
@@ -101,23 +104,23 @@ void ResModule::Init()
 {
 }
 
-ResModule* ResModule::getInstance()
-{
-	if (instance == nullptr)
-		instance = new ResModule();
-	return instance;
-}
+//ResModule* ResModule::getInstance()
+//{
+//	if (instance == nullptr)
+//		instance = new ResModule();
+//	return instance;
+//}
 
 void RenderModule::ShowIamge(BaseObject* obj)
 {
 }
 
-RenderModule* RenderModule::getInstance()
-{
-	if (instance == nullptr)
-		instance = new RenderModule();
-	return instance;
-}
+//RenderModule* RenderModule::getInstance()
+//{
+//	if (instance == nullptr)
+//		instance = new RenderModule();
+//	return instance;
+//}
 
 SceneModule::SceneModule(ResModule* res, RenderModule* render):
 	mRes(res), mRender(render)
@@ -137,7 +140,7 @@ void SceneModule::Run()
 	{
 		//ÑÓÊ±
 		std::this_thread::sleep_for(std::chrono::milliseconds(Setting::period));
-		while (heap.top().occurTime == now)
+		while (heap.top().occurTime <= now)
 		{
 			objList.push_back(heap.top().Occur());
 			heap.pop();
@@ -159,6 +162,7 @@ void SceneModule::Run()
 			mRender->ShowIamge(cur);
 	}
 }
+
 void SceneModule::CollisionDetect()
 {
 	for (auto i : objList)

@@ -14,35 +14,37 @@
 using namespace std;
 
 /*namespace nm_GameEngine {
-	class ResModule mRes;
-	class RenderModule mRender;
-	class SceneModule mScene;
+class ResModule mRes;
+class RenderModule mRender;
+class SceneModule mScene;
 }*/
 
-class ResModule {
+class ResModule
+{
 public:
 	vector<Event> LoadMap(ObjType type, int typeId);//加载地图事件
-	void Load(BaseObject *obj, ObjType type, int typeId);//加载属性、贴图等
+	BaseObject * Load(ObjType type, int typeId);//加载属性、贴图等
 	void Init();//初始化，检查文件存在与否
 private:
 	vector<Monster> monsters;
 	vector<Item> items;
-	//Singleton
-public:
-	ResModule* getInstance();
-private:
-	ResModule* instance;
+//	//Singleton
+//public:
+//	ResModule* getInstance();
+//private:
+//	ResModule* instance;
 };
 
-class RenderModule {
+class RenderModule
+{
 public:
 	void ShowIamge(BaseObject* obj);
 
-	//Singleton
-public:
-	RenderModule* getInstance();
-private:
-	RenderModule* instance;
+//	//Singleton
+//public:
+//	RenderModule* getInstance();
+//private:
+//	RenderModule* instance;
 };
 
 class SceneModule {
@@ -56,9 +58,9 @@ public:
 	void CollisionDetect();
 	bool Detect(BaseObject* i, BaseObject* j);//  判断
 
-	void AddObj(BaseObject *);
-	void DeleteObj(BaseObject *);
-	BaseObject *NewObj(ObjType type, int typeId);
+	//void AddObj(BaseObject *);
+	//void DeleteObj(BaseObject *);
+	//BaseObject *NewObj(ObjType type, int typeId);
 private:
 	ResModule* mRes;
 	RenderModule* mRender;

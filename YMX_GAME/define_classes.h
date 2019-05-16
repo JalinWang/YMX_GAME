@@ -1,4 +1,5 @@
 #pragma once 
+#include <iostream>
 
 /*
 TODO:
@@ -24,6 +25,17 @@ struct Position
 	Position operator - (Position& a)
 	{
 		return Position(x-a.x, y-a.y);
+	}
+	friend inline std::ostream & operator << (std::ostream & f, Position &p)
+	{
+	    f << p.x << " " << p.y;
+	    return f;
+	}
+
+	friend inline std::istream & operator >> (std::istream & f, Position &p)
+	{
+	    f >> p.x >> p.y;
+	    return f;
 	}
 };
 
@@ -159,24 +171,6 @@ public:
 	}
 };
 
-
-class Pos
-{
-public:
-	int x, y;
-	friend inline istream & operator << (istream & f, Pos &p)
-	{
-	    f << p.x << " " << p.y;
-	    return p;
-	}
-
-	friend inline ostream & operator >> (ostream & f, Pos &p)
-	{
-	    f >> p.x >> p.y;
-	    return f;
-	}
-};
-
 //map Event
 class Event
 {
@@ -184,9 +178,9 @@ public:
 	int occurTime; //出现时间
 	int typeId;
 	ObjType type;
-	Pos pos;
+	Position pos;
 	Event(){}
-	Event(Pos p, int t):pos(p), occurTime(t){}
+	Event(Position _pos, int _occurTime):pos(_pos), occurTime(_occurTime){}
 	bool operator < (const Event &t)
 	{
 		return occurTime < t.occurTime;

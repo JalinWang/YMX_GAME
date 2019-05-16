@@ -4,17 +4,30 @@
 
 //namespace nm_GameEngine {}
 
-
 class Engine
 {
 public:
-	Engine();
 	~Engine();
 
-	void init();
+	void Init();
+
+	Player *get_player();
+
+	ResModule *get_mRes();
+	RenderModule *get_mRender();
+	SceneModule *get_mScene();
 private:
+	Player player;
+	vector<BaseObject> objList;
 
-}engine;
+	ResModule mRes;
+	RenderModule mRender;
+	SceneModule mScene;
 
+public:
+	static Engine *get_Instance();
+private:
+	static Engine *instance = new Engine();
 
-
+	Engine();
+};
