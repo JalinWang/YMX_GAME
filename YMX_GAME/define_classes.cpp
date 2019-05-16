@@ -54,26 +54,6 @@ int BaseObject::GetUniqueId()
 	return uniqueId;
 }
 
-int BaseObject::GetShapeType()
-{
-	return shapeType;
-}
-
-double BaseObject::GetRadius()
-{
-	return radius;
-}
-
-double BaseObject::GetWidth()
-{
-	return width;
-}
-
-double BaseObject::GetHeight()
-{
-	return height;
-}
-
 void BaseObject::Delete()
 {
 	isDeleted = 1;
@@ -88,7 +68,7 @@ void Character::IncreaseHP(double dHP)
 {
 	HP += dHP;
 	HP = HP>HPmaximum?HPmaximum:HP;//这句话是防止血量超限
-	if(HP < 0)//如果角色死亡，则打上删除标记
+	if(HP <= 0)//如果角色死亡，则打上删除标记
 	{
 		Delete();
 	}

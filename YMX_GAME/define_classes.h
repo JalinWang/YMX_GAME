@@ -2,13 +2,6 @@
 #include <iostream>
 #include <math.h>
 #include <vector>
-/*
-基本说明：
-1.程序中所有关于时间的量（now, period）都是int型整数，单位是毫秒
-2.程序中的速度矢量的单位为：像素每毫秒
-3.Item的效果是硬编码
-4.
-*/
 
 /*
 TODO:
@@ -16,17 +9,10 @@ TODO:
 2.检查各种函数接口和返回值，避免直接传变量，最好全部改成传指针，提高效率（反面典型：Update函数）
 */
 
-//对象属性，用来辨别对象的性质属性
-/*
-ENUM_MAP, ENUM_WALL是BaseObject类
-ENUM_PLAYER是Player类
-ENUM_MONSTOR是Monstor类
-ENUM_ITEM是Item类
-ENUM_BULLET是Bullet类
-*/
+//对象属性，用来辨别对象的数据类型
 enum ObjType
 {
-	ENUM_MAP, ENUM_WALL, ENUM_PLAYER, ENUM_MONSTOR, ENUM_ITEM, ENUM_BULLET
+	ENUM_MAP, ENUM_MONSTOR, ENUM_PLAYER, ENUM_WALL, ENUM_BULLET
 };
 
 //ENUM_LBUTTON表示鼠标左键, ENUM_MBUTTON表示鼠标中键, ENUM_RBUTTON表示鼠标右键
@@ -74,16 +60,11 @@ struct Position
 struct MainVelocity
 {
 	double x, y;
-	MainVelocity(){}
-	MainVelocity(double _x, double _y):x(_x), y(_y){}
 };
 
 class BaseObject
 {
 public:
-	BaseObject(){}
-	BaseObject():pos(-1,-1), v(-1, -1), baseSpeed(-1), type(-1), typeId(-1), uniqueId(-1), shapeType(-1), radius(-1), width(-1), height(-1), isDeleted(0){}
-
 	Position GetPos();//返回Position结构体
 	void SetPos(double x,double y);//设置物体位置
 	void IncreasePos(double dx, double dy);//两个方向位移为dx, dy
@@ -93,15 +74,18 @@ public:
 	void IncreaseVelocity(double dx, double dy);//两个方向速度增量为dx, dy
 
 	double GetBaseSpeed();//返回该对象能够主动移动的基础速度
+	void set_baseSpeed(double t){baseSpeed = t;}
+
+	double get_radius(){return radius;}
+	void set_radius(double t){radius = t;}
+	double get_radius(){return radius;}
+	void set_radius(double t){radius = t;}
+	int get_shapeType(){return shapeType;}
+	void set_shapeType(int t){shapeType = t;}
 
 	ObjType GetType();//返回对象属性（Player,Monster...）
 	int GetTypeId();//返回物体种类ID
 	int GetUniqueId();//返回独一无二的ID
-
-	int GetShapeType();
-	double GetRadius();
-	double GetWidth();
-	double GetHeight();
 
 	void Delete();//删除该物体
 	bool IsDeleted();//该物体是否被删除，如果是返回1；
@@ -123,16 +107,20 @@ protected:
 	bool isDeleted;//删除标记
 };
 
-class Character : public BaseObject
+class Charater : public BaseObject
 {
 public:
-	Character(){}
-	Character():BaseObject(), bulletType(-1), bulletPeriod(-1), lastFireTime(0), bulletPeriodRate(1.0), HPmaximum(-1), HP(-1), HPIncrement(0), lastTime(0), velocityRate(1.0){}
-
 	//virtual void Update(int now, int period);//常规更新
 	//virtual void OnCollision(BaseObject* obj);//处理碰撞
 	void IncreaseHP(double dHP);//改变HP
 	std::vector<BaseObject*> Fire(Position direction);
+
+	double get_HPmaximum(){return radius;}
+	void set_HPmaximum(double t){radius = t;}
+	int get_bulletType(){return shapeType;}
+	void set_bulletType(int t){shapeType = t;}
+	int get_bulletPeriod(){return shapeType;}
+	void set_bulletPeriod(int t){shapeType = t;}
 
 protected://先假设弹匣子弹无限
 	int bulletType, bulletPeriod, lastFireTime;//子弹类型、子弹发射周期、上次开火时间
@@ -142,12 +130,9 @@ protected://先假设弹匣子弹无限
 	double velocityRate;//速度倍率(实现人物的加速、减速buff)
 };
 
-class Player : public Character
+class Player : public Charater
 {
 public:
-	Player(){}
-	Player():Character(){}
-
 	bool GetMouseStatus(MouseButton key);//获得当前鼠标按键信息:若被按下,则返回1;若没有按下,则返回0;
 	Position GetMousePosition();//获得当前鼠标在地图上的位置（注意！！是地图上的位置而不是屏幕上的位置！！）
 	bool GetKeyboardStatus(char key);//获得当前键盘按键的信息:若被按下,则返回1;若没有按下,则返回0;
@@ -156,12 +141,9 @@ public:
 	virtual void OnCollision(BaseObject* obj) override;//处理碰撞
 };
 
-class Monster : public Character
+class Monster : public Charater
 {
 public:
-	Monster(){}
-	Monster():Character(){}
-
 	virtual std::vector<BaseObject*> Update(int now, int period) override;//常规更新
 	virtual void OnCollision(BaseObject* obj) override;//处理碰撞
 };
@@ -169,10 +151,7 @@ public:
 class Item : public BaseObject
 {
 public:
-	Item(){}
-	Item():BaseObject(){}
-
-	virtual void Use(Character* user);//使用物品
+	virtual void Use(Charater* user);//使用物品
 
 	virtual std::vector<BaseObject*> Update(int now, int period) override;//常规更新
 	virtual void OnCollision(BaseObject* obj) override;//处理碰撞
@@ -181,13 +160,13 @@ public:
 class Bullet : public BaseObject
 {
 public:
-	Bullet(){}
-	Bullet():BaseObject(), attack(-1){}
-
 	double GetAttack();
 	virtual std::vector<BaseObject*> Update(int now, int period) override;//常规更新
 	virtual void OnCollision(BaseObject* obj) override;//处理碰撞
 	
+	double get_attack(){return radius;}
+	void set_attack(double t){radius = t;}
+
 protected:
 	double attack;//攻击力
 };
