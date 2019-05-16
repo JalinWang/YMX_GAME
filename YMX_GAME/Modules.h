@@ -8,7 +8,7 @@
 #include <functional>
 #include <iostream>
 #include "define_classes.h"
-//#include "Engine.h"
+#include "Engine.h"
 #include "Setting.h"
 
 #include "inifile.h"
@@ -26,12 +26,13 @@ class ResModule
 {
 public:
 	vector<Event> LoadMap(ObjType type, int typeId);//加载地图事件
-	BaseObject * Load(ObjType type, int typeId);//加载属性、贴图等
-	void Init();//初始化，检查文件存在与否
+	BaseObject * Load(ObjType type, int typeId);//生成对象
+	void Init();//初始化，预加载所有类型的对象
 private:
 	vector<Monster> monsters;
 	vector<Bullet> bullets;
 	vector<Player> players;
+	vector<Wall> walls;
 	//vector<Item> items;
 
 	bool ResModule::LoadBaseObject(BaseObject *p, const string &typeIdStr);
@@ -39,6 +40,7 @@ private:
 	bool ResModule::LoadMonster(Monster *p, const string &typeIdStr);
 	bool ResModule::LoadPlayer(Player *p, const string &typeIdStr);
 	bool ResModule::LoadBullet(Bullet *p, const string &typeIdStr);
+	bool ResModule::LoadWall(Wall *p, const string &typeIdStr);
 	IniFile ini;
 
 //	//Singleton
@@ -62,22 +64,21 @@ public:
 
 class SceneModule {
 public:
-	list<BaseObject*> objList;
-	list<BaseObject*> objListToAdd;
-	priority_queue<Event> heap;
-	SceneModule(ResModule*, RenderModule*);
+	//SceneModule():cnt(0){}
+	//SceneModule(ResModule*, RenderModule*);
 	void Init();
 	void Run();
-	void CollisionDetect();
-	bool Detect(BaseObject* i, BaseObject* j);//  判断
+	bool MayCollide(BaseObject* i, BaseObject* j);//判断有没有必要进行j对i的碰撞检测
+	bool Detect(BaseObject* i, BaseObject* j);//判断j是否撞上了i
+	void CollisionDetect();//碰撞检测函数
 
 	//void AddObj(BaseObject *);
 	//void DeleteObj(BaseObject *);
 	//BaseObject *NewObj(ObjType type, int typeId);
 private:
-	ResModule* mRes;
-	RenderModule* mRender;
-
+	list<BaseObject*> objList;
+	list<BaseObject*> objListToAdd;
+	priority_queue<Event> heap;
 	//	//Singleton
 	//public:
 	//	SceneModule* getInstance();

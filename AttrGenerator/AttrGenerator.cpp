@@ -25,7 +25,7 @@ protected:
 	double height;//矩形高度
 };
 
-class Charater : public BaseObject
+class Character : public BaseObject
 {
 protected://先假设弹匣子弹无限
 	int bulletType, bulletPeriod;//, lastFireTime;//子弹类型、子弹发射周期、上次开火时间
@@ -35,12 +35,12 @@ protected://先假设弹匣子弹无限
 	//float velocityRate;//速度倍率(控制人物的移动速度大小)
 };
 
-class Player : public Charater
+class Player : public Character
 {
 public:
 };
 
-class Monster : public Charater
+class Monster : public Character
 {
 public:
 };
@@ -57,6 +57,12 @@ public:
 protected:
 	int attack;//攻击力
 };
+
+class Wall : public BaseObject
+{
+public:
+};
+
 
 void WriteMonster()
 {
@@ -107,11 +113,26 @@ void WriteBullet()
 	ini.Save();
 }
 
+void WriteWall()
+{
+	string str = "0";
+
+	string filepath = "..\\YMX_GAME\\Res\\Walls.ini";
+	IniFile ini;
+ 
+	ini.Load(filepath);
+	ini.SetDoubleValue(str,"baseSpeed",1);
+	ini.SetIntValue(str,"shapeType",0);
+	ini.SetDoubleValue(str,"radius",2);
+	ini.Save();
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	WriteMonster();
 	WritePlayer();
 	WriteBullet();
+	WriteWall();
 	return 0;
 }
 
