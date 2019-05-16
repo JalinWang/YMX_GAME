@@ -1,11 +1,15 @@
 #pragma once 
 #include <iostream>
+#include <math.h>
+#include <vector>
 
 /*
 TODO:
-人类和怪物可以分成好多阵营，以免误伤
+1.人类和怪物可以分成好多阵营，以免误伤
+2.检查各种函数接口和返回值，避免直接传变量，最好全部改成传指针，提高效率（反面典型：Update函数）
 */
 
+//对象属性，用来辨别对象的数据类型
 enum ObjType
 {
 	ENUM_MAP, ENUM_MONSTOR, ENUM_PLAYER, ENUM_WALL, ENUM_BULLET
@@ -17,15 +21,28 @@ enum MouseButton
 	ENUM_LBUTTON, ENUM_MBUTTON, ENUM_RBUTTON
 };
 
+//位置矢量结构体
 struct Position
 {
-	int x, y;
+	double x, y;
 	Position(){}
-	Position(int _x, int _y):x(_x), y(_y){}
+	Position(double _x, double _y):x(_x), y(_y){}
 	Position operator - (Position& a)
 	{
 		return Position(x-a.x, y-a.y);
 	}
+
+	double Norm()//计算向量的模（向量的L2范数）
+	{
+		return sqrt(x*x + y*y);
+	}
+
+	void Standardize()//向量标准化（化归成单位向量）
+	{
+		x /= Norm();
+		y /= Norm();
+	}
+
 	friend inline std::ostream & operator << (std::ostream & f, Position &p)
 	{
 	    f << p.x << " " << p.y;
@@ -39,50 +56,55 @@ struct Position
 	}
 };
 
+//速度矢量结构体
 struct MainVelocity
 {
-	int x, y;
-};
-
-//TODO: give to shiyang
-class Mouse
-{
-public:
-	bool GetMouseStatus(MouseButton key);//获得当前鼠标按键信息:若被按下,则返回1;若没有按下,则返回0;
-	Position GetMousePosition();//获得当前鼠标在地图上的位置（注意！！是地图上的位置而不是屏幕上的位置！！）
-
-};
-//TODO: give to shiyang
-class Keyboard
-{
-public:
-	bool GetKeyboardStatus(char key);//获得当前键盘按键的信息:若被按下,则返回1;若没有按下,则返回0;
+	double x, y;
 };
 
 class BaseObject
 {
 public:
 	Position GetPos();//返回Position结构体
+	void SetPos(double x,double y);//设置物体位置
+	void IncreasePos(double dx, double dy);//两个方向位移为dx, dy
+
 	MainVelocity GetVelocity();//返回MainVelocity结构体
-	void IncreaseVelocity(int dx, int dy);//两个方向速度增量为dx, dy
+	void SetVelocity(double x,double y);//设置物体速度
+	void IncreaseVelocity(double dx, double dy);//两个方向速度增量为dx, dy
+
+	double GetBaseSpeed();//返回该对象能够主动移动的基础速度
+	void set_baseSpeed(double t){baseSpeed = t;}
+
+	double get_radius(){return radius;}
+	void set_radius(double t){radius = t;}
+	double get_radius(){return radius;}
+	void set_radius(double t){radius = t;}
+	int get_shapeType(){return shapeType;}
+	void set_shapeType(int t){shapeType = t;}
+
 	ObjType GetType();//返回对象属性（Player,Monster...）
 	int GetTypeId();//返回物体种类ID
 	int GetUniqueId();//返回独一无二的ID
 
-	virtual void Update(int now, int period);//常规更新
+	void Delete();//删除该物体
+	bool IsDeleted();//该物体是否被删除，如果是返回1；
+
+	virtual std::vector<BaseObject*> Update(int now, int period);//常规更新
 	virtual void OnCollision(BaseObject* obj);//处理碰撞
 
 protected:
 	Position pos;//位置横、纵坐标
 	MainVelocity v;//横向、纵向速度
-	int baseSpeed;//该物体能够主动移动的基础速度
+	double baseSpeed;//该物体能够主动移动的基础速度
 	ObjType type;//对象属性（Player,Monster...）
 	int typeId;//物体种类ID
 	int uniqueId;//每个物体独一无二的ID
 	int shapeType;//几何形状的种类：0为圆形，1为矩形
-	int radius;//圆形半径
-	int width;//矩形宽度
-	int height;//矩形高度
+	double radius;//圆形半径
+	double width;//矩形宽度
+	double height;//矩形高度
+	bool isDeleted;//删除标记
 };
 
 class Charater : public BaseObject
@@ -90,51 +112,63 @@ class Charater : public BaseObject
 public:
 	//virtual void Update(int now, int period);//常规更新
 	//virtual void OnCollision(BaseObject* obj);//处理碰撞
+	void IncreaseHP(double dHP);//改变HP
+	std::vector<BaseObject*> Fire(Position direction);
 
-	//virtual void Fire();//开火
+	double get_HPmaximum(){return radius;}
+	void set_HPmaximum(double t){radius = t;}
+	int get_bulletType(){return shapeType;}
+	void set_bulletType(int t){shapeType = t;}
+	int get_bulletPeriod(){return shapeType;}
+	void set_bulletPeriod(int t){shapeType = t;}
 
 protected://先假设弹匣子弹无限
 	int bulletType, bulletPeriod, lastFireTime;//子弹类型、子弹发射周期、上次开火时间
-	float bulletPeriodRate;//子弹发射周期速度倍率(控制子弹发射速度)
-	int HP, HPIncrement, lastTime;//血量、血量增速(可正可负)、buff持续时间
-	float velocityRate;//速度倍率(控制人物的移动速度大小)
+	double bulletPeriodRate;//子弹发射周期速度倍率(控制子弹发射速度)
+	double HPmaximum, HP, HPIncrement;//血量上限、血量、血量增速(可正可负)
+	int lastTime;//buff持续时间
+	double velocityRate;//速度倍率(实现人物的加速、减速buff)
 };
 
 class Player : public Charater
 {
 public:
-	virtual void Update(int now, int period) override;//常规更新
-	virtual void OnCollision(BaseObject* obj) override;//处理碰撞
+	bool GetMouseStatus(MouseButton key);//获得当前鼠标按键信息:若被按下,则返回1;若没有按下,则返回0;
+	Position GetMousePosition();//获得当前鼠标在地图上的位置（注意！！是地图上的位置而不是屏幕上的位置！！）
+	bool GetKeyboardStatus(char key);//获得当前键盘按键的信息:若被按下,则返回1;若没有按下,则返回0;
 
-	void Fire();//开火
+	virtual std::vector<BaseObject*> Update(int now, int period) override;//常规更新
+	virtual void OnCollision(BaseObject* obj) override;//处理碰撞
 };
 
 class Monster : public Charater
 {
 public:
-	virtual void Update(int now, int period) override;//常规更新
+	virtual std::vector<BaseObject*> Update(int now, int period) override;//常规更新
 	virtual void OnCollision(BaseObject* obj) override;//处理碰撞
-
-	void Fire();//开火
 };
 
 class Item : public BaseObject
 {
 public:
-	virtual void Use(Player* user) const;//使用物品
+	virtual void Use(Charater* user);//使用物品
 
-	virtual void Update(int now, int period) override;//常规更新
+	virtual std::vector<BaseObject*> Update(int now, int period) override;//常规更新
 	virtual void OnCollision(BaseObject* obj) override;//处理碰撞
 };
 
-class Bullet : BaseObject
+class Bullet : public BaseObject
 {
 public:
-	virtual void Update(int now, int period) override;//常规更新
+	double GetAttack();
+	virtual std::vector<BaseObject*> Update(int now, int period) override;//常规更新
 	virtual void OnCollision(BaseObject* obj) override;//处理碰撞
 	
+	double get_attack(){return radius;}
+	void set_attack(double t){radius = t;}
+
 protected:
-	int attack;//攻击力
+	double attack;//攻击力
 };
 
 //map Event

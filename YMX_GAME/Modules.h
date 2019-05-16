@@ -11,7 +11,10 @@
 //#include "Engine.h"
 #include "Setting.h"
 
+#include "inifile.h"
+
 using namespace std;
+using namespace inifile;
 
 /*namespace nm_GameEngine {
 class ResModule mRes;
@@ -27,7 +30,17 @@ public:
 	void Init();//初始化，检查文件存在与否
 private:
 	vector<Monster> monsters;
-	vector<Item> items;
+	vector<Bullet> bullets;
+	vector<Player> players;
+	//vector<Item> items;
+
+	bool ResModule::LoadBaseObject(BaseObject *p, const string &typeIdStr);
+	bool ResModule::LoadCharacter(Character *p, const string &typeIdStr);
+	bool ResModule::LoadMonster(Monster *p, const string &typeIdStr);
+	bool ResModule::LoadPlayer(Player *p, const string &typeIdStr);
+	bool ResModule::LoadBullet(Bullet *p, const string &typeIdStr);
+	IniFile ini;
+
 //	//Singleton
 //public:
 //	ResModule* getInstance();

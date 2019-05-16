@@ -12,10 +12,8 @@
 #include "define_classes.h"
 #include "Modules.h"
 #include <io.h>
-#include "..\Libs\inifile.h"
 
 using namespace std;
-
 using namespace inifile;
 
 //using nm_GameEngine::ResModule;
@@ -72,36 +70,112 @@ vector<Event> ResModule::LoadMap(ObjType type, int typeId)
 	return ret;
 }
 
+bool ResModule::LoadBaseObject(BaseObject *p, const string &typeIdStr)
+{
+	double dTemp;
+	int iTemp;
+
+	ini.GetDoubleValue(typeIdStr, "baseSpeed", &dTemp);
+	p->set_baseSpeed(dTemp);
+
+	ini.GetIntValue(typeIdStr, "shapeType", &iTemp);
+	p->set_shapeType(iTemp);
+
+	ini.GetDoubleValue(typeIdStr, "radius", &dTemp);
+	p->set_radius(dTemp);
+}
+
+bool ResModule::LoadCharacter(Character *p, const string &typeIdStr)
+{
+	double dTemp;
+	int iTemp;
+
+	ini.GetIntValue(typeIdStr, "bulletType", &iTemp);
+	p->set_bulletType(iTemp);
+
+	ini.GetIntValue(typeIdStr, "bulletPeriod", &iTemp);
+	p->set_bulletPeriod(iTemp);
+
+	ini.GetDoubleValue(typeIdStr, "HPmaximum", &dTemp);
+	p->set_HPmaximum(dTemp);
+
+	LoadBaseObject(p, typeIdStr);
+}
+
+bool ResModule::LoadMonster(Monster *p, const string &typeIdStr)
+{
+	LoadCharacter(p, typeIdStr);
+}
+
+bool ResModule::LoadPlayer(Player *p, const string &typeIdStr)
+{
+	LoadCharacter(p, typeIdStr);
+}
+
+bool ResModule::LoadBullet(Bullet *p, const string &typeIdStr)
+{
+	double dTemp;
+	ini.GetDoubleValue(typeIdStr, "HPmaximum", &dTemp);
+	p->set_attack(dTemp);
+	LoadBaseObject(p, typeIdStr);
+}
+
 BaseObject *ResModule::Load(ObjType type, int typeId)
 {
 	BaseObject *obj;
-	ifstream f;
 	string dir("Res\\");
-	vector<string> ret;
+	char temp[10];
+	itoa(typeId, temp, 10);
+
 	switch (type)
 	{
 	case ENUM_MONSTOR:
-		ret = listFiles(dir += "Monster\\");
-		for(auto fileName: ret)
-		{
-			f.open(dir + fileName);
-			f >> 
-		}
+		obj = new Monster;
+		ini.Load(dir + "Monsters.ini");
+		LoadMonster(dynamic_cast<Monster*>(obj), temp);
 		break;
 	case ENUM_PLAYER:
+		obj = new Player;
+		ini.Load(dir + "Players.ini");
+		LoadPlayer(dynamic_cast<Player*>(obj), temp);
 		break;
 	case ENUM_BULLET:
+		obj = new Bullet;
+		ini.Load(dir + "Bullets.ini");
+		LoadBullet(dynamic_cast<Bullet*>(obj), temp);
 		break;
-
 	case ENUM_WALL:
 	case ENUM_MAP:
 	default:
 		break;
 	}
+	return obj;
 }
 
 void ResModule::Init()
 {
+	const string dir("Res\\");
+	vector<string> sections;
+
+	ini.Load(dir + "Monsters.ini");
+	ini.GetSections(&sections);
+	for(auto section:sections)
+	{
+		Monster t;
+		LoadMonster(&t, section);
+		monsters.push_back(t);
+	}
+	sections.clear();
+
+	ini.Load(dir + "Players.ini");
+	ini.GetSections(&sections);
+	for(auto section:sections)
+	{
+		Player t;
+		LoadMonster(&t, section);
+		players.push_back(t);
+	}
+	sections.clear();
 }
 
 //ResModule* ResModule::getInstance()
