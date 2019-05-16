@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2019 WinnerHust
+﻿/* Copyright (c) 2014-2019 WinnerHust
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -26,6 +26,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#pragma once
 #ifndef INIFILE_H_
 #define INIFILE_H_
 

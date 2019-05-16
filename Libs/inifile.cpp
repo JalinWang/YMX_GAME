@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2019 WinnerHust
+﻿/* Copyright (c) 2014-2019 WinnerHust
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -32,6 +32,10 @@
 #include <iostream>
 #include <fstream>
 #include "inifile.h"
+
+#if _MSC_VER
+#define snprintf _snprintf_s
+#endif
 
 namespace inifile
 {
