@@ -1,0 +1,99 @@
+MyGame\Res\Image 路径中的图片已经被删除，请自行解压MyGame\Res\Image.zip里面的图片到MyGame\Res\Image\中
+
+Res目录结构：
+Res
+│  Bullets.ini
+│  Image.zip
+│  Monsters.ini
+│  Players.ini
+│  Walls.ini
+│  
+├─Image
+│      alphabet.bmp
+│      bullet0.bmp
+│      bullet1.bmp
+│      bullet2.bmp
+│      bullet3.bmp
+│      bullet4.bmp
+│      bullet5.bmp
+│      bullet6.bmp
+│      bullet7.bmp
+│      bullet8.bmp
+│      bulletproof0.bmp
+│      bulletproof1.bmp
+│      bulletproof2.bmp
+│      bulletproof3.bmp
+│      Bullets.txt
+│      cursor0.bmp
+│      cursor1.bmp
+│      cursor2.bmp
+│      Cursors.txt
+│      flamethrowers0.bmp
+│      freezing_gun0.bmp
+│      HP0.bmp
+│      HP1.bmp
+│      HPBar.bmp
+│      Items.txt
+│      logo2.bmp
+│      machine_gun0.bmp
+│      machine_gun1.bmp
+│      machine_gun2.bmp
+│      machine_gun3.bmp
+│      machine_gun4.bmp
+│      machine_gun5.bmp
+│      machine_gun6.bmp
+│      machine_gun7.bmp
+│      machine_gun8.bmp
+│      map0.bmp
+│      map1.bmp
+│      map2.bmp
+│      Maps.txt
+│      monster0.bmp
+│      monster1.bmp
+│      Monsters.txt
+│      num.bmp
+│      pistol0.bmp
+│      pistol1.bmp
+│      pistol2.bmp
+│      plasma_gun0.bmp
+│      plasma_gun1.bmp
+│      plasma_gun2.bmp
+│      player0.bmp
+│      Players.txt
+│      power0.bmp
+│      power1.bmp
+│      power2.bmp
+│      power3.bmp
+│      rocket0.bmp
+│      rocket1.bmp
+│      rocket2.bmp
+│      rocket3.bmp
+│      rocket4.bmp
+│      shotgun0.bmp
+│      shotgun1.bmp
+│      shotgun2.bmp
+│      sniper_rifle0.bmp
+│      wall0.bmp
+│      wall1.bmp
+│      wall2.bmp
+│      Walls.txt
+│      
+└─Map
+    │  current_round.txt
+    │  
+    ├─Round0
+    │      Items.txt
+    │      Monsters!.txt
+    │      Monsters.txt
+    │      Walls.txt
+    │      
+    ├─Round1
+    │      Items.txt
+    │      Monsters.txt
+    │      Walls.txt
+    │      
+    └─Round2
+            Items.txt
+            Monsters.txt
+            Walls.txt
+            
